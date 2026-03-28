@@ -1,0 +1,58 @@
+/* ── Global reset ── */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; padding: 0; }
+
+#root {
+  height: 100%;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  text-align: left;
+  border: none;
+  display: block;
+}
+
+/* ── react-calendar-timeline overrides ── */
+
+/* Remove default item focus outline */
+.rct-item:focus { outline: none; }
+.rct-item { z-index: 3 !important; }
+
+/* Sidebar – all white, clean border */
+.rct-sidebar { background: #FFFFFF !important; }
+.rct-sidebar .rct-sidebar-row {
+  border-bottom: 1px solid #EBEBEB !important;
+  padding: 0 !important;
+}
+.rct-sidebar .rct-sidebar-row-odd  { background: #FFFFFF !important; }
+.rct-sidebar .rct-sidebar-row-even { background: #FFFFFF !important; }
+
+/* Canvas rows – all white */
+.rct-horizontal-lines .rct-hl-odd  { background: #FFFFFF !important; }
+.rct-horizontal-lines .rct-hl-even { background: #FFFFFF !important; }
+
+/* Canvas row borders */
+.rct-hl-odd, .rct-hl-even {
+  border-bottom: 1px solid #EBEBEB !important;
+}
+
+/* Header root + all header cells – force white */
+.rct-header-root          { background: #FFFFFF !important; }
+.rct-calendar-header      { background: #FFFFFF !important; }
+.rct-dateHeader           { background: #FFFFFF !important; border-left: 1px solid #EBEBEB; font-size: 12px; font-weight: 500; color: #6B7280; }
+.rct-dateHeader-primary   { background: #FFFFFF !important; font-size: 13px; font-weight: 600; color: #374151; border-bottom: 1px solid #EBEBEB; }
+
+/* Vertical grid lines – visible table-like grid */
+.rct-vl { border-left: 1px solid #EBEBEB !important; }
+.rct-vl.rct-vl-first { border-left: 1px solid #D1D5DB !important; }
+
+/* Today highlight */
+.rct-today { background: rgba(99, 102, 241, 0.06) !important; }
+
+/* Outer border */
+.rct-outer { border: 1px solid #D1D5DB; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 3px; }
