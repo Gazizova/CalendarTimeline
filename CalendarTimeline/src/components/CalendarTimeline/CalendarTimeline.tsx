@@ -66,7 +66,7 @@ const CalendarTimeline: React.FC = () => {
   //    prop change and actually re-renders the items.
   const [itemExpandedState, setItemExpandedState] = useState<
     Record<string, boolean>
-  >(() => Object.fromEntries(INITIAL_ITEMS.map((i) => [i.id, true])));
+  >(() => Object.fromEntries(INITIAL_ITEMS.map((i) => [i.id, false])));
 
   // Drag-and-drop toggle
   const [dndEnabled, setDndEnabled] = useState(false);
@@ -84,14 +84,16 @@ const CalendarTimeline: React.FC = () => {
     setItemExpandedState((prev) => ({ ...prev, [itemId]: !prev[itemId] }));
   }, []);
 
-  const expandAll = useCallback(
-    () => setCollapsedSegments(new Set()),
-    [],
-  );
+  const expandAll = useCallback(() => setCollapsedSegments(new Set()), []);
   const collapseAll = useCallback(
-    () => setCollapsedSegments(
-      new Set(INITIAL_GROUPS.filter((g) => g.level === 0).map((g) => g.id.toString())),
-    ),
+    () =>
+      setCollapsedSegments(
+        new Set(
+          INITIAL_GROUPS.filter((g) => g.level === 0).map((g) =>
+            g.id.toString(),
+          ),
+        ),
+      ),
     [],
   );
 
@@ -118,7 +120,7 @@ const CalendarTimeline: React.FC = () => {
       return grp?.level === 1 && !collapsedSegments.has(grp.segmentId ?? "");
     }).map((item) => ({
       ...item,
-      isExpanded: itemExpandedState[item.id.toString()] ?? true,
+      isExpanded: itemExpandedState[item.id.toString()] ?? false,
       canMove: dndEnabled,
       canResize: dndEnabled ? ("both" as const) : (false as const),
     }));
@@ -150,10 +152,10 @@ const CalendarTimeline: React.FC = () => {
   }, [itemExpandedState, dndEnabled, collapsedSegments]);
 
   // Pre-compute practice count per segment
-  const practiceCountBySegment = useMemo<Record<string, number>>(
-    () =>
+  const practiceCountBySegment = useCallback(
+    (level: number): Record<string, number> =>
       Object.fromEntries(
-        INITIAL_GROUPS.filter((g) => g.level === 0).map((g) => [
+        INITIAL_GROUPS.filter((g) => g.level === level).map((g) => [
           g.id,
           INITIAL_GROUPS.filter(
             (p) => p.level === 1 && p.segmentId === g.id.toString(),
@@ -169,7 +171,7 @@ const CalendarTimeline: React.FC = () => {
       // ── Segment header row ──────────────────────────────────────────────────
       if (group.level === 0) {
         const isCollapsed = collapsedSegments.has(group.id.toString());
-        const count = practiceCountBySegment[group.id.toString()] ?? 0;
+        const count = practiceCountBySegment(0)[group.id.toString()] ?? 0;
         return (
           <Box
             onClick={() => toggleSegment(group.id.toString())}
@@ -219,7 +221,23 @@ const CalendarTimeline: React.FC = () => {
 
       // ── Summary row (empty sidebar) ─────────────────────────────────────────
       if (group.level === 2) {
-        return <Box sx={{ height: "100%" }} />;
+        const count =
+          practiceCountBySegment(0)[group.segmentId?.toString() ?? ""] ?? 0;
+        return (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              height: "100%",
+              width: "100%",
+              pl: 5,
+              pr: 1.5,
+            }}
+          >
+            {" "}
+            {count} practice{count !== 1 ? "s" : ""}
+          </Box>
+        );
       }
 
       // ── Practice row ────────────────────────────────────────────────────────
